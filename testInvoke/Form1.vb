@@ -10,14 +10,14 @@
 
     Private Sub mainForm_Load(sender As Object, e As EventArgs) Handles Me.Load
 
-        sayHelloWorld()
+        'sayHelloWorld()
 
         dt.Columns.Add("id", Type.GetType("System.Int16"))
         dt.Columns.Add("name", Type.GetType("System.String"))
         dt.Columns.Add("progress", Type.GetType("System.Int16"))
 
         dt.PrimaryKey = {dt.Columns("id")}
-        dt.Columns("id").AutoIncrement = True
+        dt.Columns("id").AutoIncrement = False
 
         gridStatus.DataSource = dt
 
@@ -35,16 +35,36 @@
 
     End Sub
 
-    Delegate Sub addRow()
+    Delegate Sub addRow(ByVal threadId As Integer)
     Delegate Sub updateRow(ByVal dr As DataRow)
+    Delegate Sub updateProgress()
 
-    Private Sub addRowToDataTable()
+
+    Private Sub updateProgressToMainForm()
+
+        Dim totalProgress As Integer = 0
+
+        For Each dr As DataRow In dt.Rows
+            totalProgress += dr("progress")
+        Next
+
+        statusProgress.Value = CInt(totalProgress \ dt.Rows.Count)
+        statusText.Text = statusProgress.Value.ToString + "%"
+
+        If statusProgress.Value = 100 Then
+            statusText.Text = "Finished"
+        End If
+
+        Me.Text = Application.ProductName + " - " + statusText.Text
+
+    End Sub
+
+
+    Private Sub addRowToDataTable(threadId As Integer)
 
         Dim dr As DataRow
 
-        dr = dt.Rows.Add
-        dr.Item("progress") = 0
-        dr.Item("name") = "Item #" + dr.Item("id").ToString
+        dr = dt.Rows.Add(threadId, "Item #" + threadId.ToString, 0)
 
     End Sub
 
@@ -62,15 +82,15 @@
 
         Dim dr As DataRow
 
+        Dim threadId As Integer = System.Threading.Thread.CurrentThread.ManagedThreadId
+
         If gridStatus.InvokeRequired Then
-            gridStatus.Invoke(New addRow(AddressOf addRowToDataTable))
+            gridStatus.Invoke(New addRow(AddressOf addRowToDataTable), New Object() {threadId})
         Else
-            dr = dt.Rows.Add
-            dr.Item("progress") = 0
-            dr.Item("name") = "Item #" + dr.Item("id").ToString
+            dr = dt.Rows.Add(threadId, "Item #" + threadId.ToString, 0)
         End If
 
-        updateRowToDataSource(dt.Rows.Count - 1)
+        updateRowToDataSource(threadId)
 
     End Sub
 
@@ -89,6 +109,8 @@
             Else
                 dr.Item("progress") += 1
             End If
+
+            Me.Invoke(New updateProgress(AddressOf updateProgressToMainForm))
 
         Next
 

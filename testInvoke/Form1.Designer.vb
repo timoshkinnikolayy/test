@@ -26,6 +26,7 @@ Partial Class mainForm
         Me.statusBar = New System.Windows.Forms.StatusStrip()
         Me.statusProgress = New System.Windows.Forms.ToolStripProgressBar()
         Me.gridStatus = New System.Windows.Forms.DataGridView()
+        Me.statusText = New System.Windows.Forms.ToolStripStatusLabel()
         Me.statusBar.SuspendLayout()
         CType(Me.gridStatus, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -41,7 +42,7 @@ Partial Class mainForm
         '
         'statusBar
         '
-        Me.statusBar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.statusProgress})
+        Me.statusBar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.statusProgress, Me.statusText})
         Me.statusBar.Location = New System.Drawing.Point(0, 271)
         Me.statusBar.Name = "statusBar"
         Me.statusBar.Size = New System.Drawing.Size(472, 22)
@@ -65,6 +66,12 @@ Partial Class mainForm
         Me.gridStatus.Size = New System.Drawing.Size(472, 215)
         Me.gridStatus.TabIndex = 2
         '
+        'statusText
+        '
+        Me.statusText.Name = "statusText"
+        Me.statusText.Size = New System.Drawing.Size(38, 17)
+        Me.statusText.Text = "Ready"
+        '
         'mainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -86,5 +93,6 @@ Partial Class mainForm
     Friend WithEvents statusBar As System.Windows.Forms.StatusStrip
     Friend WithEvents statusProgress As System.Windows.Forms.ToolStripProgressBar
     Friend WithEvents gridStatus As System.Windows.Forms.DataGridView
+    Friend WithEvents statusText As System.Windows.Forms.ToolStripStatusLabel
 
 End Class
