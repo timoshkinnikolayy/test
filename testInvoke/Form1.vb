@@ -10,6 +10,8 @@
 
     Private Sub mainForm_Load(sender As Object, e As EventArgs) Handles Me.Load
 
+        sayHelloWorld()
+
         dt.Columns.Add("id", Type.GetType("System.Int16"))
         dt.Columns.Add("name", Type.GetType("System.String"))
         dt.Columns.Add("progress", Type.GetType("System.Int16"))
